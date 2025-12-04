@@ -18,7 +18,7 @@ pros::Motor intakeBottom(19, pros::v5::MotorGears::blue);
 /* IMUS */
 // measures a robot's rotation and acceleration
 // to track its orientation (heading, pitch, roll, etc)
-pros::Imu imu(13);
+pros::Imu imu(15);
 pros::Imu imu2(18);
 
 /* PNEUMATICS */
