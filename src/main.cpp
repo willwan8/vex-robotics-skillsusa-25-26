@@ -3,8 +3,8 @@
 #include "liblvgl/llemu.hpp"
 #include "pros/abstract_motor.hpp"
 #include "pros/adi.hpp"
-#include "global.cpp"
-#include "helpers.cpp"
+#include "global.h"
+#include "helpers.h"
 
 /* CONTROLLER */
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
@@ -12,14 +12,12 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 /* MOTORS */
 pros::MotorGroup leftMotors({-11, 13, -5}, pros::MotorGearset::blue); // left motor group - ports 11 (reversed), 13, 5 (reversed)
 pros::MotorGroup rightMotors({7, -8, 9}, pros::MotorGearset::blue); // right motor group - ports 7, 8 (reversed), 9
-pros::Motor intakeTop(18, pros::v5::MotorGears::blue);
-pros::Motor intakeBottom(19, pros::v5::MotorGears::blue);
 
 /* IMUS */
 // measures a robot's rotation and acceleration
 // to track its orientation (heading, pitch, roll, etc)
 pros::Imu imu(15);
-pros::Imu imu2(18);
+pros::Imu imu2(16);
 
 /* PNEUMATICS */
 pros::adi::Pneumatics tongueMech('A', false);
@@ -180,10 +178,8 @@ void autonomous() {
 
     // loading balls (blue bottom right)
     tongueMech.extend();
-    setSpeedOfIntakes(115);
     chassis.moveToPose(30, 0, 0, 500, {.forwards=false, .maxSpeed=50});
     chassis.moveToPose(30, 8, 45, 500, {.forwards=true, .maxSpeed=50});
-    setSpeedOfIntakes(115);
     tongueMech.retract();
 
     /*
@@ -218,9 +214,9 @@ void opcontrol() {
 			/* DRIVING */
       // get joystick positions
       int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-      int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+      int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
       // move the chassis with curvature drive
-     	chassis.tank(leftY, rightX);
+     	chassis.tank(leftY, rightY);
       // delay to save resources
       pros::delay(25);
     }

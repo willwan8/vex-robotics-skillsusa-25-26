@@ -1,5 +1,6 @@
 #include "main.h"
+#include "global.h"
 
 /* GLOBALS */
-extern pros::Motor intakeTop;
-extern pros::Motor intakeBottom;
+pros::Motor intakeTop(18, pros::v5::MotorGears::blue);
+pros::Motor intakeBottom(19, pros::v5::MotorGears::blue);

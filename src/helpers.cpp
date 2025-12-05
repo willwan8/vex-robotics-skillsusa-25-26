@@ -1,6 +1,7 @@
 #include "main.h"
 #include <cmath>
-#include "global.cpp"
+#include "global.h"
+#include "helpers.h"
 
 void setSpeedIntakeTop(int speed) {
     intakeTop.move(speed);
@@ -10,11 +11,6 @@ void setSpeedIntakeTop(int speed) {
 void setSpeedIntakeBottom(int speed) {
     intakeBottom.move(speed);
     pros::delay(10);
-}
-
-void setSpeedOfIntakes(int speed) {
-    setSpeedIntakeBottom(speed);
-    setSpeedIntakeTop(speed);
 }
 
 double averageImuHeading(double h1, double h2) {
