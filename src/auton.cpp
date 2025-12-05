@@ -10,6 +10,22 @@ void scoreBlocks() {
 }
 
 void autonRouteOne() {
+  chassis.moveToPoint(0, 24.14, 1000, {.maxSpeed=80});
+  chassis.turnToHeading(90, 500);
+  chassis.moveToPoint(28, 24.14, 1000, {.maxSpeed=80});
+  chassis.moveToPoint(24, 24.14, 500, {.forwards=false});
+  chassis.turnToHeading(0, 500);
+  chassis.moveToPoint(24, 84.14, 1500, {.forwards=true, .maxSpeed=115});
+  chassis.turnToHeading(90, 500);
+  chassis.moveToPoint(48, 84.14, 1000, {.maxSpeed=80});
+
+  // scoring
+  chassis.turnToHeading(0, 500);
+  chassis.moveToPoint(48, 79.14, 1000, {.forwards=false, .maxSpeed=50});
+  scoreBlocks();
+
+  
+  /*
   chassis.moveToPose(0, 24.14, 90, 1000, {.maxSpeed=80}); // (24-16.86) + 24 - 7 for y coord (of center) (now that we know the center, we can do other calculations "normally")
   pros::delay(200);
   chassis.moveToPose(33,24.14, 0, 1500, {.maxSpeed=100});
@@ -27,9 +43,25 @@ void autonRouteOne() {
   chassis.moveToPose(45, 82.14, 0, 500, {.forwards=false, .maxSpeed=50});
   pros::delay(200);
   scoreBlocks();
+  */
 }
 
 void autonRouteTwo() {
+  // return to new start
+  chassis.moveToPoint(48, 84.14, 1000, {.forwards=true, .maxSpeed=50});
+  chassis.turnToHeading(270, 500);
+  chassis.moveToPoint(-48, 84.14, 2000, {.maxSpeed=115});
+  chassis.turnToHeading(180, 500);
+  chassis.moveToPoint(-48, 12.14, 2000, {.maxSpeed=115});
+  chassis.turnToHeading(270, 500);
+  chassis.moveToPoint(-72, 12.14, 1000, {.maxSpeed=80});
+
+  //scoring
+  chassis.turnToHeading(180, 500);
+  chassis.moveToPoint(-72, 17.14, 1000, {.forwards=false, .maxSpeed=50});
+  scoreBlocks();
+  
+  /*
   // return to new starting point
   chassis.moveToPose(45, 86.14, 270, 500, {.forwards=true, .maxSpeed=50});
   pros::delay(200);
@@ -56,14 +88,22 @@ void autonRouteTwo() {
   chassis.moveToPose(-45, 21.86, 180, 500, {.forwards=false, .maxSpeed=50});
   pros::delay(200);
   scoreBlocks();
+  */
 }
 
 void autonRouteThree() {
   // going back to park
-  chassis.moveToPose(-45, 21.86, 90, 500, {.forwards=true, .maxSpeed=50});
+  chassis.moveToPoint(-72, 12.14, 1000, {.fowards=true, .maxSpeed=50});
+  chassis.turnToHeading(90, 500);
+  chassis.moveToPoint(0, 12.14, 1000, {.maxSpeed=80});
+  chassis.turnToHeading(180, 500);
+  chassis.moveToPoint(0, -15, 1000, {.maxSpeed=80});
+  
+  /*
   pros::delay(200);
   chassis.moveToPose(0, 21.86, 180, 1500, {.maxSpeed=115});
   pros::delay(200);
   chassis.moveToPose(0, -9.86, 180, 1000, {.forwards=false, .maxSpeed=70});
   pros::delay(200);
+  */
 }
