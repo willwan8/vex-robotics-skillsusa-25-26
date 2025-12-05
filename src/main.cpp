@@ -5,92 +5,11 @@
 #include "pros/adi.hpp"
 #include "global.h"
 #include "helpers.h"
+#include "auton.h"
+#include <algorithm>
 
 /* CONTROLLER */
-pros::Controller controller(pros::E_CONTROLLER_MASTER);
-
-/* MOTORS */
-pros::MotorGroup leftMotors({-11, 13, -5}, pros::MotorGearset::blue); // left motor group - ports 11 (reversed), 13, 5 (reversed)
-pros::MotorGroup rightMotors({7, -8, 9}, pros::MotorGearset::blue); // right motor group - ports 7, 8 (reversed), 9
-
-/* IMUS */
-// measures a robot's rotation and acceleration
-// to track its orientation (heading, pitch, roll, etc)
-pros::Imu imu(15);
-pros::Imu imu2(16);
-
-/* PNEUMATICS */
-pros::adi::Pneumatics tongueMech('A', false);
-
-/* DRIVETRAIN SETTINGS*/
-lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
-                              &rightMotors, // right motor group
-                              11.45, // 10 inch track width
-                              lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
-                              450, // drivetrain rpm is 450
-                              2 // horizontal drift is 2.
-);
-
-/* TRACKING WHEELS */
-// vertical tracking wheel encoder. Rotation sensor, port 14
-pros::Rotation verticalEncoder(14);
-// vertical tracking wheel. 2" diameter, 1" offset from center
-lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_2, -1);
-
-/* ODOMETRY SETTINGS (setting up PID) */
-lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
-                            nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
-                            nullptr, // horizontal tracking wheel
-                            nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imu // inertial sensor
-);
-
-/* MOTION CONTROLLER SETTINGS */
-// lateral motion controller (forward and backward motion)
-lemlib::ControllerSettings linearController(10, // proportional gain (kP) : controls power based on error
-                                            0, // integral gain (kI) : not relevant (for now?)
-                                            50, // derivative gain (kD) : fights overshoot based on the change in error
-                                            0, // anti windup : 0 cuz kI = 0
-                                            .5, // small error range, in inches : how close to be considered "precise"
-                                            100, // small error range timeout, in milliseconds : how long the robot must stay before it stops the move
-                                            3, // large error range, in inches : how close to be considered "close enough"
-                                            500, // large error range timeout, in milliseconds : how long the robot must stay before it's "close enough" and stops the move
-                                            127 // maximum acceleration (slew)
-);
-
-// angular motion controller (turning/rotation)
-lemlib::ControllerSettings angularController(2, // proportional gain (kP)
-                                             0, // integral gain (kI)
-                                             80, // derivative gain (kD)
-                                             0, // anti windup
-                                             .5, // small error range, in degrees
-                                             100, // small error range timeout, in milliseconds
-                                             3, // large error range, in degrees
-                                             50, // large error range timeout, in milliseconds
-                                             0 // maximum acceleration (slew)
-);
-
-/* DRIVER CONTROLLER SETTINGS */
-// input curve for throttle input during driver control
-lemlib::ExpoDriveCurve throttleCurve(3, // joystick deadband out of 127
-                                     10, // minimum output where drivetrain will move out of 127
-                                     1.019 // expo curve gain
-);
-
-// input curve for steer input during driver control
-lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
-                                  10, // minimum output where drivetrain will move out of 127
-                                  1.019 // expo curve gain
-);
-
-/* CHASIS */
-// create the chassis
-lemlib::Chassis chassis(drivetrain,
-        linearController,
-       angularController,
-                        sensors,
-         &throttleCurve,
-            &steerCurve);
+pros::Controller controller(pros::E_CONTROLLER_MASTER); // not in global since not used anywhere else
 
 /* FUNCTIONS */
 /**
@@ -132,12 +51,12 @@ void initialize() {
             pros::lcd::print(2, "Theta: %f", pose.theta);
 
             pros::lcd::print(3, "IMU1 Heading: %f", imu.get_heading());
-						pros::lcd::print(4, "IMU2 Heading: %f", imu2.get_heading());
-						pros::lcd::print(5, "AVG IMU Heading: %f", averageImuHeading(imu.get_heading(), imu2.get_heading()));
-						pros::lcd::print(6, "IMU1 Orientation: %f", imu.get_physical_orientation());
-						pros::lcd::print(7, "IMU2 Orientation: %f", imu2.get_physical_orientation());
+			pros::lcd::print(4, "IMU2 Heading: %f", imu2.get_heading());
+			pros::lcd::print(5, "AVG IMU Heading: %f", averageImuHeading(imu.get_heading(), imu2.get_heading()));
+			pros::lcd::print(6, "IMU1 Orientation: %f", imu.get_physical_orientation());
+			pros::lcd::print(7, "IMU2 Orientation: %f", imu2.get_physical_orientation());
 
-						pros::lcd::print(8, "Rotation Sensor: %i", verticalEncoder.get_position());
+			pros::lcd::print(8, "Rotation Sensor: %i", verticalEncoder.get_position());
 
             pros::delay(100);
         }
@@ -171,22 +90,20 @@ void autonomous() {
     // initializing starting position
     double averageHeading = averageImuHeading(imu.get_heading(), imu2.get_heading());
     chassis.setPose(0, 0, averageHeading);
+    tongueMech.retract(); // just to ensure tongue is retracted as we will not be using the loaders for this routine
+    
+    // block pickup whilst traveling to long goal
+    setSpeedIntakeBottom(115);
 
-    // moving to first loader (blue bottom right)
-    chassis.moveToPose(0, 17, 90, 500, {.maxSpeed=60});
-    chassis.moveToPose(30, 17, 0, 750, {.maxSpeed=80});
+    // route one (collecting blocks and scoring)
+    autonRouteOne();
 
-    // loading balls (blue bottom right)
-    tongueMech.extend();
-    chassis.moveToPose(30, 0, 0, 500, {.forwards=false, .maxSpeed=50});
-    chassis.moveToPose(30, 8, 45, 500, {.forwards=true, .maxSpeed=50});
-    tongueMech.retract();
+    // route two (go to new start point, collect blocks and score)
+    autonRouteTwo();
 
-    /*
-    // move to second loader (red top right)
-    chassis.moveToPose(42, 20, 0, 750, {.maxSpeed=60});
-    chassis.moveToPose(42, 104, -45, 1000, {.maxSpeed=80});
-    */
+    // route three (parking)
+    autonRouteThree();
+    
 
 }
 
@@ -198,26 +115,24 @@ void opcontrol() {
     // loop to continuously update motors
     while (true) {
 
-			/* CONTROLS */
-			// running intake motors forward/backward
-			setSpeedIntakeTop((controller.get_digital(DIGITAL_R1) - controller.get_digital(DIGITAL_R2)) * 115);
-			setSpeedIntakeBottom((controller.get_digital(DIGITAL_L1) - controller.get_digital(DIGITAL_L2)) * 115);
-
-			// pneumatic controls
-			if (controller.get_digital_new_press(DIGITAL_UP)) {
-				tongueMech.extend();
-			}
-			if (controller.get_digital_new_press(DIGITAL_DOWN)) {
-				tongueMech.retract();
-			}
-
-			/* DRIVING */
-      // get joystick positions
-      int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-      int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-      // move the chassis with curvature drive
-     	chassis.tank(leftY, rightY);
-      // delay to save resources
-      pros::delay(25);
+		/* CONTROLS */
+		// running intake motors forward/backward
+		setSpeedIntakeTop((controller.get_digital(DIGITAL_R1) - controller.get_digital(DIGITAL_R2)) * 115);
+		setSpeedIntakeBottom((controller.get_digital(DIGITAL_L1) - controller.get_digital(DIGITAL_L2)) * 115);
+		// pneumatic controls
+		if (controller.get_digital_new_press(DIGITAL_UP)) {
+			tongueMech.extend();
+		}
+		if (controller.get_digital_new_press(DIGITAL_DOWN)) {
+			tongueMech.retract();
+		}
+		/* DRIVING */
+        // get joystick positions
+        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        // move the chassis with curvature drive
+        chassis.tank(leftY, rightY);
+        // delay to save resources
+        pros::delay(25);
     }
 }
