@@ -90,7 +90,7 @@ void autonomous() {
     // initializing starting position
     double averageHeading = averageImuHeading(imu.get_heading(), imu2.get_heading());
     chassis.setPose(0, 0, averageHeading);
-    tongueMech.retract(); // just to ensure tongue is retracted as we will not be using the loaders for this routine
+    tongueMech.extend(); // just to ensure tongue is up as we will not be using the loaders for this routine
     
     // block pickup whilst traveling to long goal
     setSpeedIntakeBottom(115);
