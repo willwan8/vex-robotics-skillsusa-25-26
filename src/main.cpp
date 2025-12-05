@@ -180,12 +180,10 @@ void autonomous() {
 
     // loading balls (blue bottom right)
     tongueMech.extend();
-    setSpeedIntakeTop(115);
-    setSpeedIntakeBottom(115);
+    setSpeedOfIntakes(115);
     chassis.moveToPose(30, 0, 0, 500, {.forwards=false, .maxSpeed=50});
     chassis.moveToPose(30, 8, 45, 500, {.forwards=true, .maxSpeed=50});
-    setSpeedIntakeTop(0);
-    setSpeedIntakeBottom(0);
+    setSpeedOfIntakes(115);
     tongueMech.retract();
 
     /*

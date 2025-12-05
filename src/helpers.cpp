@@ -12,6 +12,11 @@ void setSpeedIntakeBottom(int speed) {
     pros::delay(10);
 }
 
+void setSpeedOfIntakes(int speed) {
+    setSpeedIntakeBottom(speed);
+    setSpeedIntakeTop(speed);
+}
+
 double averageImuHeading(double h1, double h2) {
     // convert to unit circle values to prevent naive averaging
     // ex of naive averaging: 359 + 1 => avg of 180, but actual avg is 0!
