@@ -36,7 +36,7 @@ lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
 /* TRACKING WHEELS */
 // vertical tracking wheel encoder. Rotation sensor, port 14
 pros::Rotation verticalEncoder(14);
-// vertical tracking wheel. 2" diameter, 1" offset
+// vertical tracking wheel. 2" diameter, 1" offset from center
 lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_2, -1);
 
 /* ODOMETRY SETTINGS (setting up PID) */
@@ -120,8 +120,8 @@ void initialize() {
     chassis.calibrate();   // calibrates wheels + odometry
     pros::lcd::set_text(2, "Chassis calibrated!");
 
-		pros::lcd::set_text(0, "Done initializing!");
-		pros::delay(1000); // so the message can appear on screen before telemetry
+	pros::lcd::set_text(0, "Done initializing!");
+	pros::delay(1000); // so the message can appear on screen before telemetry
 
     // --- TELEMETRY TASK ---
     // prints position + telemetry to LCD every 50ms
@@ -170,7 +170,30 @@ void competition_initialize() {
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-    // code auton :)
+    // initializing starting position
+    double averageHeading = averageImuHeading(imu.get_heading(), imu2.get_heading());
+    chassis.setPose(0, 0, averageHeading);
+
+    // moving to first loader (blue bottom right)
+    chassis.moveToPose(0, 17, 90, 500, {.maxSpeed=60});
+    chassis.moveToPose(30, 17, 0, 750, {.maxSpeed=80});
+
+    // loading balls (blue bottom right)
+    tongueMech.extend();
+    setSpeedIntakeTop(115);
+    setSpeedIntakeBottom(115);
+    chassis.moveToPose(30, 0, 0, 500, {.forwards=false, .maxSpeed=50});
+    chassis.moveToPose(30, 8, 45, 500, {.forwards=true, .maxSpeed=50});
+    setSpeedIntakeTop(0);
+    setSpeedIntakeBottom(0);
+    tongueMech.retract();
+
+    /*
+    // move to second loader (red top right)
+    chassis.moveToPose(42, 20, 0, 750, {.maxSpeed=60});
+    chassis.moveToPose(42, 104, -45, 1000, {.maxSpeed=80});
+    */
+
 }
 
 /**
