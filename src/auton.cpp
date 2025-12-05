@@ -4,7 +4,7 @@
 #include "lemlib/api.hpp"
 
 void scoreBlocks() {
-  setSpeedIntakeTop(115);
+  setSpeedIntakeTop(-115);
   pros::delay(3000);
   setSpeedIntakeTop(0);
 }
