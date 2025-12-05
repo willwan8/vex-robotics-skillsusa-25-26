@@ -97,10 +97,10 @@ void autonomous() {
 
     // route one (collecting blocks and scoring)
     autonRouteOne();
-
+	pros::delay(200);
     // route two (go to new start point, collect blocks and score)
     autonRouteTwo();
-
+	pros::delay(200);
     // route three (parking)
     autonRouteThree();
     
