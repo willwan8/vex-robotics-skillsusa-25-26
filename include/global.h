@@ -3,14 +3,16 @@
 #include "lemlib/api.hpp"
 #include "pros/adi.hpp"
 
-extern pros::Motor intakeTop;
-extern pros::Motor intakeBottom;
+extern pros::Motor intakeOne;
+extern pros::Motor intakeM;
+extern pros::Motor intakeT;
 extern pros::MotorGroup leftMotors;
 extern pros::MotorGroup rightMotors;
 extern pros::Imu imu;
 extern pros::Imu imu2;
 extern lemlib::Drivetrain drivetrain;
-extern pros::adi::Pneumatics tongueMech;
+extern pros::adi::Pneumatics tongue;
+extern pros::adi::Pneumatics wing;
 extern pros::Rotation verticalEncoder;
 extern lemlib::TrackingWheel vertical;
 extern lemlib::OdomSensors sensors;

@@ -9,7 +9,7 @@
 #include <algorithm>
 
 /* CONTROLLER */
-pros::Controller controller(pros::E_CONTROLLER_MASTER); // not in global since not used anywhere else
+pros::Controller master(pros::E_CONTROLLER_MASTER); // not in global since not used anywhere else
 
 /* FUNCTIONS */
 /**
@@ -87,24 +87,7 @@ void competition_initialize() {
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-    // initializing starting position
-    double averageHeading = averageImuHeading(imu.get_heading(), imu2.get_heading());
-    chassis.setPose(0, 0, averageHeading);
-    tongueMech.retract(); // just to ensure tongue is retracted as we will not be using the loaders for this routine
     
-    // block pickup whilst traveling to long goal
-    setSpeedIntakeBottom(115);
-
-    // route one (collecting blocks and scoring)
-    autonRouteOne();
-
-    // route two (go to new start point, collect blocks and score)
-    autonRouteTwo();
-
-    // route three (parking)
-    autonRouteThree();
-    
-
 }
 
 /**
@@ -114,25 +97,45 @@ void opcontrol() {
     competition_initialize();
     // loop to continuously update motors
     while (true) {
+        pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+                         (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+                         (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+        
+        if(master.get_digital_new_press(DIGITAL_Y) && master.get_digital_new_press(DIGITAL_X)){
+            autonomous();
+        }
 
-		/* CONTROLS */
-		// running intake motors forward/backward
-		setSpeedIntakeTop((controller.get_digital(DIGITAL_R1) - controller.get_digital(DIGITAL_R2)) * 115);
-		setSpeedIntakeBottom((controller.get_digital(DIGITAL_L1) - controller.get_digital(DIGITAL_L2)) * 115);
-		// pneumatic controls
-		if (controller.get_digital_new_press(DIGITAL_UP)) {
-			tongueMech.extend();
+        if (master.get_digital_new_press(DIGITAL_L1) && !(wing.is_extended())) {
+            wing.extend();            
+        }
+        else if (master.get_digital_new_press(DIGITAL_L2) && wing.is_extended()) {
+            wing.retract();
+        }
+
+        setIntakeTwo((master.get_digital(DIGITAL_L1) - master.get_digital(DIGITAL_L2)) * 127);
+
+        //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.
+        if (master.get_digital(DIGITAL_X)) {
+            setIntakeM(90);
+        } else {
+            setIntakeOne((master.get_digital(DIGITAL_R1) - master.get_digital(DIGITAL_R2)) * 127);
+        }
+
+
+
+		if (master.get_digital_new_press(DIGITAL_UP)) {
+		    tongue.toggle();
 		}
-		if (controller.get_digital_new_press(DIGITAL_DOWN)) {
-			tongueMech.retract();
+
+        if (master.get_digital_new_press(DIGITAL_B)) {
+		    wing.toggle();
 		}
-		/* DRIVING */
-        // get joystick positions
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-        // move the chassis with curvature drive
+
+        // **Tank drive control**
+        int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         chassis.tank(leftY, rightY);
-        // delay to save resources
-        pros::delay(25);
+
+        pros::delay(25);  // Prevents CPU overuse
     }
 }

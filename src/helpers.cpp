@@ -3,13 +3,20 @@
 #include "global.h"
 #include "helpers.h"
 
-void setSpeedIntakeTop(int speed) {
-    intakeTop.move(speed);
+void setIntakeOne(int speed) {
+    intakeOne.move(speed);
+    intakeM.move(speed);
     pros::delay(10);
 }
 
-void setSpeedIntakeBottom(int speed) {
-    intakeBottom.move(speed);
+void setIntakeTwo(int speed) {
+    intakeT.move(speed);
+    pros::delay(10);
+}
+
+void setIntakeM(int speed) {
+    intakeM.move(speed);
+    intakeT.move(-(speed)/2);
     pros::delay(10);
 }
 
