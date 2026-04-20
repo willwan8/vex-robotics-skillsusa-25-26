@@ -3,12 +3,20 @@
 #include "helpers.h"
 #include "lemlib/api.hpp"
 
+void skillsAuton() {
+  intakeM.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  intakeT.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+  
+}
+
+/*
 void scoreBlocks() {
   //setSpeedIntakeTop(-115);
   //pros::delay(3000);
   //setSpeedIntakeTop(0);
 }
-
+/*
 void autonRouteOne() {
   chassis.moveToPoint(0, 24.14, 1000, {.maxSpeed=80});
   chassis.turnToHeading(90, 500);
@@ -44,8 +52,9 @@ void autonRouteOne() {
   pros::delay(200);
   scoreBlocks();
   */
-}
+//}
 
+/*
 void autonRouteTwo() {
   // return to new start
   chassis.moveToPoint(48, 84.14, 1000, {.forwards=true, .maxSpeed=50});
@@ -89,8 +98,8 @@ void autonRouteTwo() {
   pros::delay(200);
   scoreBlocks();
   */
-}
-
+//}
+/*
 void autonRouteThree() {
   // going back to park
   chassis.moveToPoint(-72, 12.14, 1000, {.forwards=true, .maxSpeed=50});
@@ -106,4 +115,4 @@ void autonRouteThree() {
   chassis.moveToPose(0, -9.86, 180, 1000, {.forwards=false, .maxSpeed=70});
   pros::delay(200);
   */
-}
+//}
