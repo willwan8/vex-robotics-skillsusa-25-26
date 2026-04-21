@@ -8,3 +8,4 @@
 //void autonRouteThree();
 
 void skillsAuton();
+void loadBalls();
