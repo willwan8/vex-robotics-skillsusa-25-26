@@ -87,6 +87,7 @@ void competition_initialize() {
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
+	skillsAuton()
 }
 
 /**
