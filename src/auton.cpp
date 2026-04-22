@@ -35,7 +35,7 @@ void skillsAuto(){
     chassis.moveToPoint(50, 9, 5000, {.maxSpeed = 90}); 
 
     pros::delay(500);
-    toungue.extend();
+    tongue.extend();
   
     pros::delay(100); 
     chassis.turnToHeading ( -180, 5000);
@@ -48,14 +48,14 @@ void skillsAuto(){
     
 
     //load balls
-    intake1Speed = 120;
+    int intake1Speed = 120;
     loadBalls();
 
      int y = 95;
     //move to other side
     chassis.moveToPoint(53, 5, 5000, {.forwards = false}); 
     pros::delay(500);
-    toungue.retract();
+    tongue.retract();
     intake1Speed = 0;
     chassis.moveToPoint(66, 32, 5000, {.forwards = false,  .minSpeed=62, .earlyExitRange=4}); 
     chassis.moveToPoint(65, 83, 5000, {.forwards = false, .minSpeed=62, .earlyExitRange=2}); //change back to 40
@@ -79,14 +79,14 @@ void skillsAuto(){
     pros::delay(1500); // wait for a moment to shoot
     wing.extend();
     intake1Speed = 120;
-    intake2Speed = 120;  
+    int intake2Speed = 120;  
     pros::delay(2500); // wait for a moment to shoot
 
     
     //second loader
     intake1Speed = 0;
     intake2Speed = 0;
-    toungue.extend();
+    tongue.extend();
     intake1Speed = 120;
     
     
@@ -120,7 +120,7 @@ void skillsAuto(){
 
     intake1Speed = 0;
     intake2Speed = 0; 
-    toungue.retract();
+    tongue.retract();
      int x = 39;
 
      //travel
@@ -141,7 +141,7 @@ void skillsAuto(){
     //REFLECTION
 
    pros::delay(500);
-    toungue.extend();
+    tongue.extend();
     
     pros::delay(100); 
     intake1Speed = 120;
@@ -164,7 +164,7 @@ void skillsAuto(){
     //move to other side
     chassis.moveToPoint(-53, 95, 5000, {.forwards = false}); 
     pros::delay(500);
-    toungue.retract();
+    tongue.retract();
     intake1Speed = 0;
     chassis.moveToPoint(-66, 70, 5000, {.forwards = false,  .minSpeed=62, .earlyExitRange=4}); 
      chassis.moveToPoint(-65, 13, 5000, {.forwards = false, .minSpeed=62, .earlyExitRange=2}); //change back to 40
@@ -194,7 +194,7 @@ void skillsAuto(){
     //second loader
     intake1Speed = 0;
     intake2Speed = 0;
-    toungue.extend();
+    tongue.extend();
     intake1Speed = 120;
     
     
@@ -210,7 +210,7 @@ void skillsAuto(){
     wing.extend();
     chassis.turnToHeading(180, 50); // turn to face goal
     pros::delay(20); // wait for a moment to stabilize
-    toungue.retract();
+    tongue.retract();
     intake1Speed = 120;
     intake2Speed = 120;  
     pros::delay(1000); // wait for a moment to shoot
