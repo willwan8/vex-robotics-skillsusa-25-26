@@ -39,7 +39,7 @@ pros::adi::Pneumatics wing('E', false);
 /* TRACKING WHEELS */
 // vertical tracking wheel encoder. Rotation sensor, port 6 reversed
 pros::Rotation verticalEncoder(-6);
-// vertical tracking wheel. 2" diameter, 1" offset from center
+// vertical tracking wheel. 2" diameter, 0" offset from center
 lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_2, 0);
 
 /* ODOMETRY SETTINGS (setting up PID) */
