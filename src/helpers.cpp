@@ -2,6 +2,7 @@
 #include <cmath>
 #include "global.h"
 #include "helpers.h"
+#include "intakeTasks.h"
 
 void setIntakeOne(int speed) {
     intakeOne.move(speed);
@@ -17,6 +18,16 @@ void setIntakeTwo(int speed) {
 void setIntakeM(int speed) {
     intakeM.move(speed);
     intakeT.move(-(speed)/2);
+    pros::delay(10);
+}
+
+void jam(int speed) {
+    intake2Speed=-120;
+    intake1Speed=-120;
+    pros::delay(70);
+
+    intake2Speed=120;
+    intake1Speed=120;
     pros::delay(10);
 }
 

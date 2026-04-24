@@ -1,6 +1,7 @@
 #include "main.h"
 #include "auton.h"
 #include "helpers.h"
+#include "intakeTasks.h"
 #include "lemlib/api.hpp"
 
 void skillsAuto(){
@@ -36,6 +37,8 @@ void skillsAuto(){
 
     pros::delay(500);
     tongue.extend();
+    dec.extend();
+    
   
     pros::delay(100); 
     chassis.turnToHeading ( -180, 5000);
@@ -48,7 +51,7 @@ void skillsAuto(){
     
 
     //load balls
-    int intake1Speed = 120;
+    intake1Speed = 120;
     loadBalls();
 
      int y = 95;
@@ -79,8 +82,10 @@ void skillsAuto(){
     pros::delay(1500); // wait for a moment to shoot
     wing.extend();
     intake1Speed = 120;
-    int intake2Speed = 120;  
-    pros::delay(2500); // wait for a moment to shoot
+    intake2Speed = 120;  
+    jam(120);
+
+    pros::delay(2300); // wait for a moment to shoot
 
     
     //second loader
@@ -104,7 +109,15 @@ void skillsAuto(){
     wing.extend();
     intake1Speed = 120;
     intake2Speed = 120;  
-    pros::delay(2500); // wait for a moment to shoot
+    pros::delay(50); // wait for a moment to shoot
+    intake2Speed = -120;  
+    intake1Speed = -120;
+   pros::delay(100); //jam
+    intake2Speed = 120;  
+    intake1Speed = 120;
+
+    
+    pros::delay(2200); // wait for a moment to shoot
 
  
     
@@ -262,7 +275,6 @@ void loadBalls(){
     }
 
 }
-
 /*
 void scoreBlocks() {
   //setSpeedIntakeTop(-115);

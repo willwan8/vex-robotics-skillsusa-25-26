@@ -35,6 +35,7 @@ lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
 /* PNEUMATICS */
 pros::adi::Pneumatics tongue('H', false);
 pros::adi::Pneumatics wing('E', false);
+pros::adi::Pneumatics dec('A', false);
 
 /* TRACKING WHEELS */
 // vertical tracking wheel encoder. Rotation sensor, port 6 reversed
@@ -52,7 +53,7 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
 
 /* MOTION CONTROLLER SETTINGS */
 // lateral motion controller (forward and backward motion)
-lemlib::ControllerSettings lateral_controller(9, // proportional gain (kP)
+lemlib::ControllerSettings lateralController(9, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               20, // derivative gain (kD)
                                               3, // anti windup
@@ -64,7 +65,7 @@ lemlib::ControllerSettings lateral_controller(9, // proportional gain (kP)
 );
 
 // angular motion controller (turning/rotation)
-lemlib::ControllerSettings angular_controller(10, // proportional gain (kP)
+lemlib::ControllerSettings angularController(10, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               80, // derivative gain (kD)
                                               3, // anti windup
@@ -77,7 +78,7 @@ lemlib::ControllerSettings angular_controller(10, // proportional gain (kP)
 
 /* DRIVER CONTROLLER SETTINGS */
 // input curve for throttle input during driver control
-lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
+lemlib::ExpoDriveCurve throttleCurve(3, // joystick deadband out of 127
                                      10, // minimum output where drivetrain will move out of 127
                                      1.019 // expo curve gain
 );
@@ -93,8 +94,8 @@ lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
 /* CHASIS */
 // create the chassis
 lemlib::Chassis chassis(drivetrain,
-        linearController,
-       angularController,
-                        sensors,
-         &throttleCurve
+        lateralController,
+        angularController,
+        sensors,
+        &throttleCurve
 );

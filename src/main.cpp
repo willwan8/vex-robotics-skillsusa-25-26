@@ -6,6 +6,7 @@
 #include "global.h"
 #include "helpers.h"
 #include "auton.h"
+#include "intakeTasks.h"
 #include <algorithm>
 
 /* CONTROLLER */
@@ -31,6 +32,10 @@ void initialize() {
         pros::delay(25);
     }
     pros::lcd::set_text(1, "IMUs calibrated!");
+
+    // intake tasks
+    pros::Task intakeTask1(intake1Task);
+    pros::Task intakeTask2(intake2Task);
 
     // calibrating chasis
     pros::lcd::set_text(2, "Calibrating chassis...");
@@ -87,7 +92,7 @@ void competition_initialize() {
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-	skillsAuton()
+	skillsAuton();
 }
 
 /**
@@ -128,8 +133,12 @@ void opcontrol() {
 		}
 
         if (master.get_digital_new_press(DIGITAL_B)) {
-		    wing.toggle();
+		    dec.toggle();
 		}
+
+        if (master.get_digital_new_press(DIGITAL_A)) {
+            wing.toggle();
+        }
 
         // **Tank drive control**
         int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);

@@ -8,4 +8,6 @@ void setIntakeTwo(int speed);
 
 void setIntakeM(int speed);
 
+void jam(int speed);
+
 double averageImuHeading(double h1, double h2);
