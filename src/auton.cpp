@@ -4,7 +4,7 @@
 #include "intakeTasks.h"
 #include "lemlib/api.hpp"
 
-void skillsAuto(){
+void skillsAuton(){
     intakeM.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     intakeT.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 

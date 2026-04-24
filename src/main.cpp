@@ -103,8 +103,8 @@ void opcontrol() {
     // loop to continuously update motors
     while (true) {
         pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-                         (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-                         (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+            (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+            (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
         
         if(master.get_digital_new_press(DIGITAL_Y) && master.get_digital_new_press(DIGITAL_X)){
             autonomous();
